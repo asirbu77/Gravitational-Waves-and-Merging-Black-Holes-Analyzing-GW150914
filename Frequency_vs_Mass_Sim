@@ -1,0 +1,43 @@
+# Calculates and plots the gravitational wave frequencies for black holes of various masses -
+# compares this to the range of frequencies observable by LIGO -
+# computes the min and max masses of black hole mergers observable by LIGO
+
+from astropy import constants as const
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+
+# Define masses of simulate black holes
+masses = np.array([3, 50, 10**6, 10**9, 10**11])
+masses_M_sun = 2*(masses*const.M_sun).value     # Total masses in units of solar mass
+comp_ratio = 1.7
+
+# Calculate GW frequencies at mergers based on masses
+f_gw = 1/(2*np.sqrt(2))*(const.c**3/(np.pi*const.G*masses_M_sun*comp_ratio**(3/2)))
+f_gw = (f_gw).value
+
+# Define frequency range observable by LIGO
+f_LIGO_min = 10
+f_LIGO_max = 10**3
+
+# Calculate max and min size of merging black holes detectable by LIGO (in units of solar masses)
+M_LIGO_max = const.c ** (3) / (2 * math.sqrt(2) * np.pi * f_LIGO_min * const.G * comp_ratio ** (3 / 2))
+M_LIGO_max_Msun = (M_LIGO_max / (2*const.M_sun)).value
+M_LIGO_min = const.c ** (3) / (2 * math.sqrt(2) * np.pi * f_LIGO_max * const.G * comp_ratio ** (3 / 2))
+M_LIGO_min_Msun = (M_LIGO_min / (2*const.M_sun)).value
+
+print("Minimum size of merging black holes detectable by LIGO:", round(M_LIGO_min_Msun,2), "solar masses")
+print("Maximum size of merging black holes detectable by LIGO:", round(M_LIGO_max_Msun,2), "solar masses")
+
+# Plot freq. vs mass for simulated black holes, with freq. & mass range observable by LIGO
+plt.scatter(masses, f_gw, label='Simulated Black Holes')
+plt.axhline(10,  linestyle='--', color='red', label='Min. LIGO Frequency')
+plt.axhline(10**3,  linestyle='--',color='black',label='Max. LIGO Frequency')
+plt.scatter(M_LIGO_min_Msun, f_LIGO_max, color='black',label='Min. LIGO Mass')
+plt.scatter(M_LIGO_max_Msun, f_LIGO_min, color='red',label='Max. LIGO Mass')
+plt.yscale("log")
+plt.xscale("log")
+plt.xlabel("Multiples of Solar Mass")
+plt.ylabel("Frequency at Merger (Hz)")
+plt.legend()
+plt.show()

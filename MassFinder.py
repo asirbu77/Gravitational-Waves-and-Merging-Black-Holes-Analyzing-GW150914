@@ -3,7 +3,6 @@ from PyAstronomy import pyaC
 import matplotlib.pyplot as plt
 from astropy import constants as const
 import math
-import quantities
 
 tevent = 1126259462.422  # Mon Sep 14 09:50:45 GMT 2015
 
@@ -80,21 +79,29 @@ for i in range(12):
     L1fgw_times[i] = np.average([L1zeros[i], L1zeros[i + 1]])
 
 # Calculate least squares linear fit
-H1fgw_83_fit = np.polyfit(H1fgw_times, H1fgw_83, 1)
-L1fgw_83_fit = np.polyfit(L1fgw_times, L1fgw_83, 1)
+H1fgw_83_fit, H1_fit_residuals, _, _, _ = np.polyfit(H1fgw_times, H1fgw_83, 1, full=True)
+L1fgw_83_fit, L1_fit_residuals, _, _, _ = np.polyfit(L1fgw_times, L1fgw_83, 1, full=True)
+print('H1 Fit Residuals:', H1_fit_residuals[0])
+print('L1 Fit Residuals:', L1_fit_residuals[0])
 
 # Frequency plots
 # Livingston
-plt.plot(L1fgw_times, L1fgw_83_fit[0] * L1fgw_times + L1fgw_83_fit[1])
-plt.scatter(L1fgw_times, L1fgw_83)
+plt.plot(L1fgw_times, L1fgw_83_fit[0] * L1fgw_times + L1fgw_83_fit[1], color='red', label='Least Squares Fit')
+plt.scatter(L1fgw_times, L1fgw_83, color='red', label='Livingston Data')
+plt.figtext(0.21,0.55,r'$\frac{df^{-8/3}}{dt}$', fontsize=14)
+plt.figtext(0.28,0.55,r'$=-3.4\times 10^{-4}$', fontsize=10)
+plt.legend()
 plt.xlabel("Time (s)")
-plt.ylabel(r'$f_{GW}^{-8/3}$')
+plt.ylabel(r'(Frequency/Hz)$^{-8/3}$')
 plt.show()
-# Hanford
-plt.plot(H1fgw_times, H1fgw_83_fit[0] * H1fgw_times + H1fgw_83_fit[1])
-plt.scatter(H1fgw_times, H1fgw_83)
+# Handford
+plt.plot(H1fgw_times, H1fgw_83_fit[0] * H1fgw_times + H1fgw_83_fit[1], label='Least Squares Fit')
+plt.scatter(H1fgw_times, H1fgw_83, label='Handford Data')
+plt.figtext(0.21,0.72,r'$\frac{df^{-8/3}}{dt}$', fontsize=14)
+plt.figtext(0.28,0.72,r'$=-4.5\times 10^{-4}$', fontsize=10)
+plt.legend()
 plt.xlabel("Time (s)")
-plt.ylabel(r'$f_{GW}^{-8/3}$')
+plt.ylabel(r'(Frequency/Hz)$^{-8/3}$')
 plt.show()
 
 # Calculate frequency-time slopes (df^(-8/3)/dt)
@@ -110,7 +117,8 @@ M_tot_H1_M0 = (M_tot_H1 / const.M_sun).value
 M_tot_L1 = const.c ** (3) / (2 * math.sqrt(2) * np.pi * L1fgw_merge * const.G * comp_ratio ** (3 / 2))
 M_tot_L1_M0 = (M_tot_L1 / const.M_sun).value
 M_tot = np.average([M_tot_H1_M0, M_tot_L1_M0])
-print("Estimated Total Mass:", round(M_tot, 3), "solar masses")
+print("Estimated Total Masses: H1:", round(M_tot_H1_M0, 3), "solar masses, L1:", round(M_tot_L1_M0, 3), "solar masses")
+print("Average Estimated Total Mass:", round(M_tot, 3), "solar masses")
 
 # Calculate chirp masses (in units of solar masses)
 M_ch_H1 = (const.c ** 3 / const.G) * (-H1_f_slope * 5 * (8 * np.pi) ** (-8 / 3)) ** (3 / 5)
@@ -118,11 +126,10 @@ M_ch_H1_M0 = (M_ch_H1 / const.M_sun).value
 M_ch_L1 = (const.c ** 3 / const.G) * (-L1_f_slope * 5 * (8 * np.pi) ** (-8 / 3)) ** (3 / 5)
 M_ch_L1_M0 = (M_ch_L1 / const.M_sun).value
 M_ch = np.average([M_ch_H1_M0, M_ch_L1_M0])
-print("Estimated Chirp Mass:", round(M_ch, 3), "solar masses")
+print("Estimated Chirp Masses: H1:", round(M_ch_H1_M0, 3), "solar masses, L1:", round(M_ch_L1_M0, 3), "solar masses")
+print("Average Estimated Chirp Mass:", round(M_ch, 3), "solar masses")
 
 # Find m1 and m2 from total and chirp mass
 # Solve quadratic of m2=M_tot-m1 subbed into M_ch equation:
 m = np.roots([1, -M_tot, (M_ch ** 5 * M_tot) ** (1 / 3)])
-print("Esimated masses:", round(m[0], 2), "and", round(m[1], 2), "solar masses")
-
-
+print("Estimated Black Hole Masses:", round(m[0], 2), "and", round(m[1], 2), "solar masses")

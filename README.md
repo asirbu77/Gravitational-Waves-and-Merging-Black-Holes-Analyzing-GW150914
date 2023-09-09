@@ -1,5 +1,8 @@
 # Gravitational-Waves-and-Merging-Black-Holes-Analyzing-GW150914
 
+## Abstract
+The purpose of this investigation is to explore the properties of gravitational waves and the evolution of black hole mergers. This is performed in the context of GW150914 using a classical model with minimal general relativistic corrections. The gravitational wave event was detected by the LIGO on September 14, 2015 at 09:50:45 UTC. The source of GW150914 has been established in previous work to be a binary black hole merger. The determination of the individual masses is based on Newtonian and Keplerian dynamics. This investigation explores the effectiveness of classical physics in predicting the behaviour and characteristic masses of the black holes. Firstly, the relationship between gravitational wave frequency and black holes mass is determined. The gravitational wave frequency at merger is used to determine a total mass of $68.36M_\odot$. A linear regression of $f_{GW}^{-8/3}$ vs time is used to find a chirp mass of $27.81M_\odot$. Using varying ranges of frequency sample points, the masses of the two black holes were determined to lie in the ranges of $42.4M_\odot \text{ to } 45.35M_\odot$ and $23.02M_\odot \text{ to } 25.96M_\odot$. These classically determined masses are in moderate agreement with cited values deduced from general relativistic equations. Furthermore, Keplerian orbital equations as well as Newtonian mechanics are used to model the time-evolution of the system's orbital frequency, velocity and separation.
+
 ## Project description
 This project was conducted as a course requirement for Astronomy 4602 at Western University.
 
